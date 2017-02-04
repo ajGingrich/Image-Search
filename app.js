@@ -27,7 +27,7 @@ app.get('/favicon.ico', function(req, res) {
 var info = {};
 
 //get new URL, add to database and send
-app.get('/new/:id', function (req, res) {
+app.get('/:id', function (req, res) {
     var input = req.params.id;
     info.test = input;
     console.log(input);
