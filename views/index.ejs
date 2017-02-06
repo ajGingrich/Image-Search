@@ -9,11 +9,13 @@
 <h3 id="title" class="title">Instructions</h3>
 <img id="gnomes" src="https://upload.wikimedia.org/wikipedia/en/d/dd/Gnomes_plan.png"/>
 <ol id="list">
-  <li>Pass a url preceded by /new/ into the address bar</li>
-  <li>Make sure that the original url is included as well, e.g. https://urlshortener320.herokuapp.com/new/https://www.chess.com</li>
-  <li>Enter the new shortened url provided to be redirected</li>
-  <li>?? </li>
-  <li>Profit</li>
+    <li>Pass a query preceded by /api/imagesearch/ into the address bar</li>
+    <li>Make sure that the original url is included as well, e.g. https://image-search320.herokuapp.com/api/imagesearch/funny cats</li>
+    <li>The result will be a array of information with the URLs for 10 images and their host pages</li>
+    <li>In order to paginate through the results, add ?offset=page number to the URL. For example, funny cats?offset=2</li>
+    <li>To see the last ten searches, add /api/latest to the original url</li>
+    <li>?? </li>
+    <li>Profit</li>
 </ol>
 </body>
 

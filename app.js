@@ -8,8 +8,7 @@ var url = process.env.MONGOLAB_URI;
 
 var app = express();
 
-var bingKey = '4581ce72ddc84210bace81fe40344f7c';
-//var bingKey = procces.env.bingKey;
+var bingKey = process.env.bingKey;
 var Bing = require('node-bing-api')({ accKey: bingKey });
 
 app.set('port', (process.env.PORT || 5000));
@@ -29,7 +28,6 @@ app.get('/', function (req, res) {
 
 //catch the favicon first
 app.get('/favicon.ico', function(req, res) {
-    //var input = req.params.id;
     res.json(204);
 });
 
@@ -42,11 +40,22 @@ app.get('/api/imagesearch/:id', function (req, res) {
     searchInfo.query = search;
     searchInfo.time = new Date();
 
+    var skip = 0;
+    if (req.query.offset !== undefined) {
+        skip = (req.query.offset -1)*10;
+    }
+    var searchResults = [];
+
     Bing.images(search, {
         top: 10,
-        skip: 0
-    }, function(error, res, body) {
-        console.log(body);
+        skip: skip
+    }, function(err, test, data) {
+        if (err) throw err;
+        for (var i=0; i<10; i++) {
+            searchResults.push({name: data.value[i].name, img_url: data.value[i].contentUrl, page_url:data.value[i].hostPageUrl});
+        }
+        console.log(searchResults);
+        res.json(searchResults);
     });
 
     // Use connect method and insert to the Server
@@ -61,7 +70,7 @@ app.get('/api/imagesearch/:id', function (req, res) {
                     return err;
                 }
                 else {
-                    console.log(data);
+                    //console.log(data);
                 }
             });
 
@@ -69,17 +78,27 @@ app.get('/api/imagesearch/:id', function (req, res) {
             db.close();
         }
     });
-    res.json(searchInfo);
 });
 
 //Mongo for last image searches
 app.get('/api/latest', function (req, res) {
     searchInfo.test = "Get latest seaches and dates using mongoDB here";
 
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var collection = db.collection('imageSearch');
+        collection.find().sort({ $natural: -1 }).limit(10).toArray(function(err, documents) {
+            if (err) throw err;
+            for (var i=0; i<documents.length; i++) {
+                var x = documents[i];
+                delete (x["_id"]);
+            }
+            res.json(documents);
+            db.close()
+        });
+    });
 
-    res.render('latest');
 });
-
 
 app.listen(app.get('port'), function() {
     console.log("Node app is running at localhost:" + app.get('port'))
