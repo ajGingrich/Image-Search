@@ -19,3 +19,11 @@ body {
     margin-left: 150px;
     border-radius: 5px;
 }
+a {
+    color: blue;
+    font-family: Cambria, serif;
+    text-decoration: none;
+}
+#descriptionLinks {
+    margin-left: 10px;
+}
